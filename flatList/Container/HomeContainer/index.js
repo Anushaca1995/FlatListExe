@@ -39,6 +39,13 @@ const HomeScreen = props => {
       </TouchableOpacity>
     );
   };
+
+  const renderItemSeperator = () => {
+    return <View style={style.itemBorder}></View>;
+  };
+  const renderItemBorder = () => {
+    return <View style={style.border}></View>;
+  };
   const renderPersonal = () => {
     return (
       <View style={style.view}>
@@ -69,7 +76,13 @@ const HomeScreen = props => {
     <ScrollView>
       <View style={{backgroundColor: '#ffe6e6'}}>
         <Text style={style.caption}>User List</Text>
-        <FlatList data={listData} renderItem={renderCellItem} />
+        <FlatList
+          data={listData}
+          renderItem={renderCellItem}
+          ItemSeparatorComponent={renderItemSeperator}
+          ListFooterComponent={renderItemBorder}
+          ListHeaderComponent={renderItemBorder}
+        />
         {renderPersonal()}
         <Button
           title="Show"

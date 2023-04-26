@@ -11,6 +11,8 @@ export default StyleSheet.create({
     fontFamily: 'Georgia',
     padding: 1,
   },
+  border: {marginTop: 10, backgroundColor: '#800000', height: 2},
+  itemBorder: {marginTop: 5, backgroundColor: '#ff9999', height: 1},
   view: {marginTop: 10},
   caption: {
     flex: 1,
