@@ -4,23 +4,30 @@ import {
   Text,
   FlatList,
   TextInput,
-  Button,
   ScrollView,
   TouchableOpacity,
+  Modal,
 } from 'react-native';
 import style from './style';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
+import UserForm from '../../components/UserForm';
 
 const HomeScreen = props => {
-  const [fullName, setFullName] = useState('');
-  const [userLanguage, setUserLanguage] = useState('');
-  const [userAge, setUserAge] = useState('');
+  const [jumpText, setJumpText] = useState('');
   const [listData, setListData] = useState([
     {name: 'Anu', language: 'Malayalam', age: '27'},
     {name: 'Aby', language: 'English', age: '32'},
     {name: 'Jake', language: 'Hindi', age: '24'},
     {name: 'Luke', language: 'Tamil', age: '5'},
   ]);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  useEffect(() => {
+    if (props?.route?.params?.message) {
+      setJumpText(props?.route?.params?.message);
+    }
+  }, [props]);
+
   const renderCellItem = ({item, index}) => {
     return (
       <TouchableOpacity
@@ -46,61 +53,56 @@ const HomeScreen = props => {
   const renderItemBorder = () => {
     return <View style={style.border}></View>;
   };
-  const renderPersonal = () => {
+  const renderModal = () => {
     return (
-      <View style={style.view}>
-        <TextInput
-          style={style.inputField}
-          onChangeText={newText => setFullName(newText)}
-          defaultValue={fullName}
-          placeholder="Name"
-        />
-
-        <TextInput
-          style={style.inputField}
-          onChangeText={newText => setUserLanguage(newText)}
-          defaultValue={userLanguage}
-          placeholder="Language"
-        />
-
-        <TextInput
-          style={style.inputField}
-          onChangeText={newText => setUserAge(newText)}
-          defaultValue={userAge}
-          placeholder="Age"
-        />
-      </View>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          // Alert.alert('Modal has been closed.');
+          setModalVisible(!modalVisible);
+        }}>
+        <View style={style.centeredView}>
+          <View style={style.modalView}>
+            <Text style={style.modalText}>Successfully Added</Text>
+            <TouchableOpacity
+              style={[style.button, style.buttonClose]}
+              onPress={() => setModalVisible(!modalVisible)}>
+              <Text style={style.textStyle}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     );
+  };
+  const renderFlatList = () => {
+    return (
+      <>
+        <Text style={style.caption}>User List</Text>
+        <ScrollView>
+          <FlatList
+            data={listData}
+            renderItem={renderCellItem}
+            ItemSeparatorComponent={renderItemSeperator}
+            ListFooterComponent={renderItemBorder}
+            ListHeaderComponent={renderItemBorder}
+          />
+        </ScrollView>
+      </>
+    );
+  };
+  const onFormSubmit = userObject => {
+    setListData([...listData, userObject]);
+    setModalVisible(true);
   };
   return (
     <ScrollView>
       <View style={{backgroundColor: '#ffe6e6'}}>
-        <Text style={style.caption}>User List</Text>
-        <FlatList
-          data={listData}
-          renderItem={renderCellItem}
-          ItemSeparatorComponent={renderItemSeperator}
-          ListFooterComponent={renderItemBorder}
-          ListHeaderComponent={renderItemBorder}
-        />
-        {renderPersonal()}
-        <Button
-          title="Show"
-          onPress={() => {
-            if (fullName && userLanguage && userAge) {
-              const userData = {
-                name: fullName,
-                language: userLanguage,
-                age: userAge,
-              };
-              console.log(userData);
-              setListData([...listData, userData]);
-              setFullName('');
-              setUserLanguage('');
-              setUserAge('');
-            }
-          }}
-        />
+        <UserForm onFormSubmit={onFormSubmit} />
+        <Text style={style.jumpText}>{jumpText}</Text>
+        {renderFlatList()}
+        {renderModal()}
       </View>
     </ScrollView>
   );
