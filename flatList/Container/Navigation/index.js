@@ -3,6 +3,7 @@ import UserScreen from '../UserScreen';
 import {View, Text} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import FastImageContainer from '../FastImage';
 
 const Navigation = () => {
   const Stack = createNativeStackNavigator();
@@ -27,6 +28,7 @@ const Navigation = () => {
       <Tab.Navigator>
         <Tab.Screen name="Home" component={HomeScreen} />
         <Tab.Screen name="User" component={UserScreen} />
+        <Tab.Screen name="FlatImage" component={FastImageContainer} />
       </Tab.Navigator>
     );
   };
